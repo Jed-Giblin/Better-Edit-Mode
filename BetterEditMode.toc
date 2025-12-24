@@ -16,9 +16,9 @@
 ## Category-zhCN: 用户界面
 ## Category-zhTW: 使用者介面
 
-libs\Ace3\LibStub\LibStub.lua
-libs\Ace3\CallbackHandler-1.0\CallbackHandler-1.0.xml
-libs\Ace3\AceAddon-3.0\AceAddon-3.0.xml
-libs\Ace3\AceEvent-3.0\AceEvent-3.0.xml
-libs\Ace3\AceGUI-3.0\AceGUI-3.0.xml
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+libs\AceAddon-3.0\AceAddon-3.0.xml
+libs\AceEvent-3.0\AceEvent-3.0.xml
+libs\AceGUI-3.0\AceGUI-3.0.xml
 main.lua
