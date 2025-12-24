@@ -3,6 +3,7 @@
 ## Notes: More features is better
 ## Author: Spren
 ## Version: @project-version@
+## X-Curse-Project-ID: 1412588
 ## SavedVariables: BetterEditModeDB
 ## Category-enUS: User Interface
 ## Category-deDE: Benutzerinterface
