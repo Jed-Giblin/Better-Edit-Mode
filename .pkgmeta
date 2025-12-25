@@ -8,3 +8,4 @@ externals:
 ignore:
   - pkgmeta.yml
   - Libs/Libstub/tests
+  - local_build.sh
