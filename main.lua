@@ -1,5 +1,4 @@
-
-
+-- Lua
 BetterEditMode = LibStub("AceAddon-3.0"):NewAddon(
     "BetterEditMode",
     "AceEvent-3.0"
@@ -7,6 +6,22 @@ BetterEditMode = LibStub("AceAddon-3.0"):NewAddon(
 
 local BetterEditMode = LibStub("AceAddon-3.0"):GetAddon("BetterEditMode")
 local AceGUI = LibStub("AceGUI-3.0")
+
+-- Default settings
+local DEFAULTS = {
+    AnchorDirection = "RIGHT", -- or "LEFT"
+    -- add more defaults as needed
+}
+
+local function ApplyDefaults(db, defaults)
+    if type(db) ~= "table" then db = {} end
+    for k, v in pairs(defaults) do
+        if db[k] == nil then
+            db[k] = v
+        end
+    end
+    return db
+end
 
 local function GetBarBit(idx)
     if idx == 2 then return 0 end  -- Bottom Left
@@ -25,13 +40,9 @@ local function GetEnableMultiMask()
     return v
 end
 
-
-
-
 local function SetEnableMultiMask(mask)
     SetCVar("enableMultiActionBars", tostring(mask))
 end
-
 
 local function SetBarEnabledByBit(idx, enable)
     local bitIndex = GetBarBit(idx)
@@ -72,7 +83,6 @@ local function EnsureClickBindingUILoaded()
     end
 end
 
-
 local function GetBarEnabled(frame)
     local bitIndex = GetBarBit(frame)
     if bitIndex then
@@ -85,10 +95,9 @@ local function GetBarEnabled(frame)
     return false
 end
 
-
 local function GetBarVisible(frame)
     if frame and frame.GetSettingValue then
-        return frme:IsShow()
+        return frame:IsShown()
     end
     return frame and frame:IsShown() or false
 end
@@ -105,8 +114,8 @@ function BetterEditMode:CreateCdManagerPanel()
     if self._cdMiniPanel then return end
     if not EditModeManagerFrame then return end
 
-    parent = self._abMiniPanel
-    panel = CreateFrame("Frame", "BetterEditMode_ActionBarMiniPanel", parent, "BackdropTemplate")
+    local parent = self._abMiniPanel or EditModeManagerFrame
+    local panel = CreateFrame("Frame", "BetterEditMode_CdMiniPanel", parent, "BackdropTemplate")
     panel:SetSize(260, 10)
     panel:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, 3)
     panel:SetBackdrop({
@@ -117,17 +126,17 @@ function BetterEditMode:CreateCdManagerPanel()
     })
     panel:SetBackdropColor(0, 0, 0, 0.7)
 
-    title = panel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local title = panel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     title:SetPoint("TOPLEFT", 8, -8)
     title:SetText("CD Manager Settings")
 
     panel.checks = {}
 
-    y = -32
+    local y = -32
 
-    _, _, _, toc = GetBuildInfo()
+    local _, _, _, toc = GetBuildInfo()
 
-    features = {
+    local features = {
         ["Cooldown Manager"] = {
             cVar = "cooldownViewerEnabled",
             cVarEnabled = "1",
@@ -166,15 +175,16 @@ function BetterEditMode:CreateCdManagerPanel()
             }
         }
     }
+
     for featureName, featureData in pairs(features) do
         if toc >= featureData.minVersion then
-            cb = CreateFrame("CheckButton", nil, panel, "ChatConfigCheckButtonTemplate")
+            local cb = CreateFrame("CheckButton", nil, panel, "ChatConfigCheckButtonTemplate")
             cb:SetPoint("TOPLEFT", 8, y)
             y = y - 22
             cb.Text:SetText(featureName)
             cb:SetChecked(GetCVar(featureData.cVar) == featureData.cVarEnabled)
-            cb:SetScript("OnClick", function(btn)
-                isEnabled = GetCVar(featureData.cVar) == featureData.cVarEnabled
+            cb:SetScript("OnClick", function()
+                local isEnabled = GetCVar(featureData.cVar) == featureData.cVarEnabled
                 if isEnabled then
                     SetCVar(featureData.cVar, featureData.cVarDisabled)
                 else
@@ -185,21 +195,25 @@ function BetterEditMode:CreateCdManagerPanel()
         end
     end
 
-    height = math.max((32 + 16) + (#panel.checks * 22), 60)
+    local height = math.max((32 + 16) + (#panel.checks * 22), 60)
     panel:SetSize(260, height)
 
     self._cdMiniPanel = panel
 end
 
-
 function BetterEditMode:CreateActionBarMiniPanel()
     if self._abMiniPanel then return end
     if not EditModeManagerFrame then return end
 
-    parent = EditModeManagerFrame
-    panel = CreateFrame("Frame", "BetterEditMode_ActionBarMiniPanel", parent, "BackdropTemplate")
+    local parent = EditModeManagerFrame
+    local panel = CreateFrame("Frame", "BetterEditMode_ActionBarMiniPanel", parent, "BackdropTemplate")
     panel:SetSize(260, 10)
-    panel:SetPoint("TOPLEFT", parent, "TOPRIGHT", 0, 0)
+    if BetterEditModeDB.AnchorDirection == "RIGHT" then
+        panel:SetPoint("TOPLEFT", parent, "TOPRIGHT", 0, 0)
+    else
+        panel:SetPoint("TOPRIGHT", parent, "TOPLEFT", 0, 0)        
+    end
+    
 
     panel:SetBackdrop({
         bgFile = "Interface/Tooltips/UI-Tooltip-Background",
@@ -209,12 +223,12 @@ function BetterEditMode:CreateActionBarMiniPanel()
     })
     panel:SetBackdropColor(0, 0, 0, 0.7)
 
-    title = panel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local title = panel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     title:SetPoint("TOPLEFT", 8, -8)
     title:SetText("Action Bars Enabled")
     panel.checks = {}
 
-    header = CreateFrame("Frame", nil, panel)
+    local header = CreateFrame("Frame", nil, panel)
     header:SetPoint("TOPLEFT", 6, -6)
     header:SetPoint("TOPRIGHT", -6, -6)
     header:SetHeight(28)
@@ -244,12 +258,11 @@ function BetterEditMode:CreateActionBarMiniPanel()
         end
     end)
 
-    
     -- Start below header
     local y = -32
 
     for i = 2, 8 do
-        cb = CreateFrame("CheckButton", nil, panel, "ChatConfigCheckButtonTemplate")
+        local cb = CreateFrame("CheckButton", nil, panel, "ChatConfigCheckButtonTemplate")
         cb:SetPoint("TOPLEFT", 8, y)
         y = y - 22
 
@@ -267,12 +280,52 @@ function BetterEditMode:CreateActionBarMiniPanel()
         table.insert(panel.checks, cb)
     end
 
-    height = math.max((32 + 16) + (#panel.checks * 22), 60)
+    local height = math.max((32 + 16) + (#panel.checks * 22), 60)
     panel:SetSize(260, height)
 
     self._abMiniPanel = panel
 end
 
+function BetterEditMode:CreateOptionsPanel()
+    if self._optionsPanel then return end
+
+    local panel = CreateFrame("Frame", "BetterEdit_Config", UIParent)
+    panel.name = "Better Edit Mode"
+
+    local configTitle = panel:CreateFontString(nil, "ARTWORK")
+    configTitle:SetFont(STANDARD_TEXT_FONT, 18)
+    configTitle:SetPoint("TOPLEFT", 16, -16)
+    configTitle:SetText("BetterEditMode - Settings & Options")
+
+    -- Create/attach AceGUI container once
+    if not panel._aceContainer then
+        local container = AceGUI:Create("SimpleGroup")
+        container.frame:SetParent(panel)
+        container.frame:SetPoint("TOPLEFT", 16, -50)
+        container.frame:SetPoint("TOPRIGHT", -16, -50)
+        container.frame:SetHeight(80)
+        container:SetLayout("List")
+        panel._aceContainer = container
+    end
+
+    -- Dropdown: Left/Right
+    local dropdown = AceGUI:Create("Dropdown")
+    dropdown:SetWidth(200)
+    dropdown:SetList({ LEFT = "Left", RIGHT = "Right" })
+    dropdown:SetValue(BetterEditModeDB.AnchorDirection or "RIGHT")
+    dropdown:SetLabel("Frame Anchor")
+    dropdown:SetCallback("OnValueChanged", function(_, _, key)
+        BetterEditModeDB.AnchorDirection = key
+        self._abMiniPanel = nil
+        self:CreateActionBarMiniPanel()
+    end)
+    panel._aceContainer:AddChild(dropdown)
+
+    local category = Settings.RegisterCanvasLayoutCategory(panel, "Better Edit Mode")
+    Settings.RegisterAddOnCategory(category)
+
+    self._optionsPanel = panel
+end
 
 function BetterEditMode:UpdateActionBarMiniPanelVisibility()
     if not self._abMiniPanel then return end
@@ -301,8 +354,13 @@ end
 
 function BetterEditMode:OnEnable()
     self.ClickedCastingButton = false
+    if type(BetterEditModeDB) ~= "table" then
+        BetterEditModeDB = {}
+    end
+    ApplyDefaults(BetterEditModeDB, DEFAULTS)
     if C_AddOns.IsAddOnLoaded("Blizzard_EditMode") then
         self:SetupEditModeHooks()
+        self:CreateOptionsPanel()
     else
         self:RegisterEvent("ADDON_LOADED", function(_, addonName)
             if addonName == "Blizzard_EditMode" then
