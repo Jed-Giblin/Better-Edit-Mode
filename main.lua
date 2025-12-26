@@ -1,4 +1,3 @@
--- Lua
 BetterEditMode = LibStub("AceAddon-3.0"):NewAddon(
     "BetterEditMode",
     "AceEvent-3.0"
@@ -7,10 +6,9 @@ BetterEditMode = LibStub("AceAddon-3.0"):NewAddon(
 local BetterEditMode = LibStub("AceAddon-3.0"):GetAddon("BetterEditMode")
 local AceGUI = LibStub("AceGUI-3.0")
 
--- Default settings
+
 local DEFAULTS = {
-    AnchorDirection = "RIGHT", -- or "LEFT"
-    -- add more defaults as needed
+    AnchorDirection = "RIGHT",
 }
 
 local function ApplyDefaults(db, defaults)
@@ -317,7 +315,9 @@ function BetterEditMode:CreateOptionsPanel()
     dropdown:SetCallback("OnValueChanged", function(_, _, key)
         BetterEditModeDB.AnchorDirection = key
         self._abMiniPanel = nil
+        self._cdMiniPanel = nil
         self:CreateActionBarMiniPanel()
+        self:CreateCdManagerPanel()
     end)
     panel._aceContainer:AddChild(dropdown)
 
