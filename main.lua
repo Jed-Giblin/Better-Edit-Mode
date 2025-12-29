@@ -181,7 +181,7 @@ function BetterEditMode:CreateBindingsPanel()
                     type = "button",
                     callback = function()
                         if InCombatLockdown() then
-                            UIErrorsFrame:AddMessage("Cannot open Click Casting in combat.", 1, 0.2, 0.2)
+                            UIErrorsFrame:AddMessage("Cannot open Keybinding mode in combat.", 1, 0.2, 0.2)
                             return
                         end
                         if EditModeManagerFrame:HasActiveChanges() then
@@ -218,7 +218,7 @@ function BetterEditMode:CreateBindingsPanel()
                                 end
                             end)
                             HideUIPanel(EditModeManagerFrame)
-                            ClickBindingFrame:Show()
+                            ToggleClickBindingFrame()
                         end
                     end
                 },
