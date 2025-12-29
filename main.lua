@@ -255,35 +255,42 @@ function BetterEditMode:CreateCdManagerPanel()
     panel.checks = {}
 
     local y = -32
+    local _, _, _, toc = GetBuildInfo()
 
     local features = {
         ["Cooldown Manager"] = {
             cVar = "cooldownViewerEnabled",
             cVarEnabled = "1",
-            cVarDisabled = "0"
+            cVarDisabled = "0",
+            minVersion = 110207,
         },
         ["External Defensives"] = {
             cVar = "externalDefensivesEnabled",
             cVarEnabled = "1",
-            cVarDisabled = "0"
+            cVarDisabled = "0",
+            minVersion = 120000,
         },
         ["Damage Meter"] = {
             cVar = "damageMeterEnabled",
             cVarEnabled = "1",
-            cVarDisabled = "0"
+            cVarDisabled = "0",
+            minVersion = 120000,
         },
         ["Boss Warnings"] = {
             cVar = "combatWarningsEnabled",
             cVarEnabled = "1",
-            cVarDisabled = "0"
+            cVarDisabled = "0",
+            minVersion = 120000,
         },
         ["Diminishing Returns Tracking"] = {
             cVar = "spellDiminishPVPEnemiesEnabled",
             cVarEnabled = "1",
             cVarDisabled = "0",
+            minVersion = 120000,
             children = {
                 ["Only castable by me"] = {
                     cVar = "spellDiminishPVPOnlyTriggerableByMe",
+                    minVersion = 120000,
                     cVarEnabled = "1",
                     cVarDisabled = "0"
                 }
@@ -291,20 +298,22 @@ function BetterEditMode:CreateCdManagerPanel()
         }
     }
     for featureName, featureData in pairs(features) do
-        cb = CreateFrame("CheckButton", nil, panel, "ChatConfigCheckButtonTemplate")
-        cb:SetPoint("TOPLEFT", 8, y)
-        y = y - 22
-        cb.Text:SetText(featureName)
-        cb:SetChecked(GetCVar(featureData.cVar) == featureData.cVarEnabled)
-        cb:SetScript("OnClick", function(btn)
-            isEnabled = GetCVar(featureData.cVar) == featureData.cVarEnabled
-            if isEnabled then
-                SetCVar(featureData.cVar, featureData.cVarDisabled)
-            else
-                SetCVar(featureData.cVar, featureData.cVarEnabled)
-            end
-        end)
-        table.insert(panel.checks, cb)
+        if toc >= featureData.minVersion then
+            cb = CreateFrame("CheckButton", nil, panel, "ChatConfigCheckButtonTemplate")
+            cb:SetPoint("TOPLEFT", 8, y)
+            y = y - 22
+            cb.Text:SetText(featureName)
+            cb:SetChecked(GetCVar(featureData.cVar) == featureData.cVarEnabled)
+            cb:SetScript("OnClick", function(btn)
+                isEnabled = GetCVar(featureData.cVar) == featureData.cVarEnabled
+                if isEnabled then
+                    SetCVar(featureData.cVar, featureData.cVarDisabled)
+                else
+                    SetCVar(featureData.cVar, featureData.cVarEnabled)
+                end
+            end)
+            table.insert(panel.checks, cb)
+        end
     end
 
     height = math.max((32 + 16) + (#panel.checks * 22), 60)
