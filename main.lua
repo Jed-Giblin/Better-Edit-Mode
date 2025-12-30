@@ -25,41 +25,12 @@ local function GetEnableMultiMask()
     return v
 end
 
-
-
-
-local function SetEnableMultiMask(mask)
-    SetCVar("enableMultiActionBars", tostring(mask))
-end
-
-
-local function SetBarEnabledByBit(idx, enable)
-    local bitIndex = GetBarBit(idx)
-    if not bitIndex then return end
-    local mask = GetEnableMultiMask()
-    local flag = bit.lshift(1, bitIndex)
-    if enable then
-        mask = bit.bor(mask, flag)
-    else
-        mask = bit.band(mask, bit.bnot(flag))
-    end
-    SetEnableMultiMask(mask)
-end
-
-local function SetBarEnabled(frame, enable)
+local function ToggleBar(frame, enable)
     if InCombatLockdown() then
         UIErrorsFrame:AddMessage("Cannot modify action bars in combat.", 1, 0.2, 0.2)
         return
     end
-
-    SetBarEnabledByBit(frame, enable)
-
-    if ActionBarController_UpdateAll then
-        pcall(ActionBarController_UpdateAll)
-    end
-    if UpdateMultiActionBars then
-        pcall(UpdateMultiActionBars)
-    end
+    Settings.SetValue("PROXY_SHOW_ACTIONBAR_" .. frame, enable)
 end
 
 local function InEditMode()
@@ -83,22 +54,6 @@ local function GetBarEnabled(frame)
         end
     end
     return false
-end
-
-
-local function GetBarVisible(frame)
-    if frame and frame.GetSettingValue then
-        return frme:IsShow()
-    end
-    return frame and frame:IsShown() or false
-end
-
-local function SetBarVisible(frame, enable)
-    if not frame or not frame.SetSettingValue then return end
-    frame:SetSettingValue(5, enable and 1 or 0)
-    if frame.UpdateSystem then
-        frame:UpdateSystem()
-    end
 end
 
 local function setupPanel(panelName, parent)
@@ -369,7 +324,7 @@ function BetterEditMode:CreateActionBarMiniPanel()
                 UIErrorsFrame:AddMessage("Cannot modify action bars in combat.", 1, 0.2, 0.2)
                 return
             end
-            SetBarEnabled(i, btn:GetChecked())
+            ToggleBar(i, btn:GetChecked())
         end)
         table.insert(panel.checks, cb)
     end
@@ -399,12 +354,20 @@ function BetterEditMode:SetupEditModeHooks()
     self:CreateBindingsPanel()
     self:CreateCdManagerPanel()
 
-    EditModeManagerFrame:HookScript("OnShow", function()
+    hooksecurefunc(EditModeManagerFrame, "EnterEditMode", function()
         self._abMiniPanel:Show()
     end)
-    EditModeManagerFrame:HookScript("OnHide", function()
+
+    hooksecurefunc(EditModeManagerFrame, "ExitEditMode", function()
         self._abMiniPanel:Hide()
     end)
+
+    -- EditModeManagerFrame:HookScript("OnShow", function()
+    --     self._abMiniPanel:Show()
+    -- end)
+    -- EditModeManagerFrame:HookScript("OnHide", function()
+    --     self._abMiniPanel:Hide()
+    -- end)
 end
 
 function BetterEditMode:HookStaticPopupResponse()
