@@ -8,6 +8,20 @@ BetterEditMode = LibStub("AceAddon-3.0"):NewAddon(
 local BetterEditMode = LibStub("AceAddon-3.0"):GetAddon("BetterEditMode")
 local AceGUI = LibStub("AceGUI-3.0")
 
+local DEFAULTS = {
+    AnchorDirection = "RIGHT",
+}
+
+local function ApplyDefaults(db, defaults)
+    if type(db) ~= "table" then db = {} end
+    for k, v in pairs(defaults) do
+        if db[k] == nil then
+            db[k] = v
+        end
+    end
+    return db
+end
+
 local function GetBarBit(idx)
     if idx == 2 then return 0 end  -- Bottom Left
     if idx == 3 then return 1 end  -- Bottom Right
@@ -204,7 +218,7 @@ function BetterEditMode:CreateCdManagerPanel()
     if not EditModeManagerFrame then return end
 
     parent = self._bndPanel
-    panel = setupPanel("BetterEditMode_ActionBarMiniPanel", parent)
+    panel = setupPanel("BetterEditMode_CdMiniPanel", parent)
     setupTitle(panel, "CD Manager Settings")
 
     panel.checks = {}
@@ -281,11 +295,14 @@ end
 function BetterEditMode:CreateActionBarMiniPanel()
     if self._abMiniPanel then return end
     if not EditModeManagerFrame then return end
-
     parent = EditModeManagerFrame
     panel = CreateFrame("Frame", "BetterEditMode_ActionBarMiniPanel", parent, "BackdropTemplate")
     panel:SetSize(260, 10)
-    panel:SetPoint("TOPLEFT", parent, "TOPRIGHT", 0, 0)
+    if BetterEditModeDB.AnchorDirection == "RIGHT" then
+        panel:SetPoint("TOPLEFT", parent, "TOPRIGHT", 0, 0)
+    else
+        panel:SetPoint("TOPRIGHT", parent, "TOPLEFT", 0, 0);
+    end
 
     panel:SetBackdrop({
         bgFile = "Interface/Tooltips/UI-Tooltip-Background",
@@ -386,11 +403,50 @@ function BetterEditMode:HookStaticPopupResponse()
     end
 end
 
+function BetterEditMode:CreateOptionsPanel()
+    if self._optionsPanel then return end
+    local panel = CreateFrame("Frame", "BetterEdit_Config", UIParent)
+    panel.name = "Better Edit Mode"
+    local configTitle = panel:CreateFontString(nil, "ARTWORK")
+    configTitle:SetFont(STANDARD_TEXT_FONT, 18)
+    configTitle:SetPoint("TOPLEFT", 16, -16)
+    configTitle:SetText("BetterEditMode - Settings & Options")
+    if not panel._aceContainer then
+        local container = AceGUI:Create("SimpleGroup")
+        container.frame:SetParent(panel)
+        container.frame:SetPoint("TOPLEFT", 16, -50)
+        container.frame:SetPoint("TOPRIGHT", -16, -50)
+        container.frame:SetHeight(80)
+        container:SetLayout("List")
+        panel._aceContainer = container
+    end
+    local dropdown = AceGUI:Create("Dropdown")
+    dropdown:SetWidth(200)
+    dropdown:SetList({ LEFT = "Left", RIGHT = "Right" })
+    dropdown:SetValue(BetterEditModeDB.AnchorDirection or "RIGHT")
+    dropdown:SetLabel("Frame Anchor")
+    dropdown:SetCallback("OnValueChanged", function(_, _, key)
+        BetterEditModeDB.AnchorDirection = key
+        self._abMiniPanel = nil
+        self._cdMiniPanel = nil
+        self._bndPanel = nil
+        self:CreateActionBarMiniPanel()
+        self:CreateBindingsPanel()
+        self:CreateCdManagerPanel()
+    end)
+    panel._aceContainer:AddChild(dropdown)
+    local category = Settings.RegisterCanvasLayoutCategory(panel, "Better Edit Mode")
+    Settings.RegisterAddOnCategory(category)
+    self._optionsPanel = panel
+end
+
 function BetterEditMode:OnEnable()
     self.ClickedCastingButton = false
+    if type(BetterEditModeDB) ~= "table" then BetterEditModeDB = {} end
     if C_AddOns.IsAddOnLoaded("Blizzard_EditMode") then
         self:SetupEditModeHooks()
         self:HookStaticPopupResponse()
+        self:CreateOptionsPanel()
     else
         self:RegisterEvent("ADDON_LOADED", function(_, addonName)
             if addonName == "Blizzard_EditMode" then
