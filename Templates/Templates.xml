@@ -1,0 +1,22 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+    <!-- Reusable panel template using BackdropTemplate -->
+    <Frame name="BEM_PanelTemplate" virtual="true" inherits="BackdropTemplate">
+        <Size x="260" y="10"/>
+        <Layers>
+            <Layer level="OVERLAY">
+                <FontString name="$parentTitle" inherits="GameFontNormal" parentKey="title">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="8" y="-8"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                BetterEditMode:ApplyPanelBackdrop(self)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+
+</Ui>

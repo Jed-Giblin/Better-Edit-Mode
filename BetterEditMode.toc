@@ -1,3 +1,4 @@
+
 ## Interface: 120001, 120000, 110207
 ## Title: BetterEditMode
 ## Notes: More features is better
@@ -17,9 +18,16 @@
 ## Category-zhCN: 用户界面
 ## Category-zhTW: 使用者介面
 
-libs\LibStub\LibStub.lua
-libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
-libs\AceAddon-3.0\AceAddon-3.0.xml
-libs\AceEvent-3.0\AceEvent-3.0.xml
-libs\AceGUI-3.0\AceGUI-3.0.xml
-main.lua
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+
+Core.lua
+Templates\Templates.xml
+BetterEditMode.xml
+Modules\ActionBarPanel.lua
+Modules\BindingsPanel.lua
+Modules\CooldownPanel.lua
+Modules\Options.lua

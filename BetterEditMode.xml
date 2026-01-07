@@ -1,0 +1,30 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+    <!-- Action Bar Mini Panel -->
+    <Frame name="BetterEditMode_ActionBarMiniPanel" inherits="BEM_PanelTemplate" hidden="true">
+        <Scripts>
+            <OnLoad inherit="append">
+                self.title:SetText("Action Bars Enabled")
+            </OnLoad>
+        </Scripts>
+    </Frame>
+
+    <!-- Bindings Panel -->
+    <Frame name="BetterEditMode_BindingsPanel" inherits="BEM_PanelTemplate" hidden="true">
+        <Scripts>
+            <OnLoad inherit="append">
+                self.title:SetText("Bindings")
+            </OnLoad>
+        </Scripts>
+    </Frame>
+
+    <!-- Cooldown Manager Panel -->
+    <Frame name="BetterEditMode_CdMiniPanel" inherits="BEM_PanelTemplate" hidden="true">
+        <Scripts>
+            <OnLoad inherit="append">
+                self.title:SetText("CD Manager Settings")
+            </OnLoad>
+        </Scripts>
+    </Frame>
+
+</Ui>
