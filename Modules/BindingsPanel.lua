@@ -127,7 +127,7 @@ function BEM:CreateBindingsPanel()
     end
 
     local height = math.max((32 + 16) + (controlCount * 26), 60)
-    panel:SetSize(260, height)
+    panel:SetSize(290, height)
     panel:Show()
 
     self._bndPanel = panel

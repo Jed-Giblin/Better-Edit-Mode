@@ -46,9 +46,15 @@ function BEM:CreateActionBarMiniPanel()
         end)
         table.insert(panel.checks, cb)
     end
+    BEM:setupCvarListener( "enableMultiActionBars", nil, function(_)
+        for i = 2, 8 do
+             panel.checks[i-1]:SetChecked(BEM:GetBarEnabled(i))
+        end
+    end)
+
 
     local height = math.max((32 + 16) + (#panel.checks * 22), 60)
-    panel:SetSize(260, height)
+    panel:SetSize(290, height)
 
     if self:InEditMode() then
         panel:Show()

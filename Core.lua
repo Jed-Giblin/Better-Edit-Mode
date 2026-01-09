@@ -81,6 +81,7 @@ end
 function BEM:OnEnable()
     self.ClickedCastingButton = false
     self.ClickedKeybindingMode = false
+    self.cvarListeners = {}
 
     if type(BetterEditModeDB) ~= "table" then BetterEditModeDB = {} end
     self:ApplyDefaults(BetterEditModeDB, self.DEFAULTS)
@@ -99,6 +100,17 @@ function BEM:OnEnable()
         end)
     end
 end
+
+function BEM:setupCvarListener(cvarName, control, cb)
+    if cb ~= nil then
+        BEM.cvarListeners[cvarName] = cb
+    else
+        BEM.cvarListeners[cvarName] = function(newValue)
+            control:SetChecked(newValue == "1")
+        end
+    end
+end
+
 
 function BEM:SetupEditModeHooks()
     if self._editModeHooked then return end

@@ -29,5 +29,5 @@ Templates\Templates.xml
 BetterEditMode.xml
 Modules\ActionBarPanel.lua
 Modules\BindingsPanel.lua
-Modules\CooldownPanel.lua
+Modules\GameplayEnhancementsPanel.lua
 Modules\Options.lua

@@ -18,13 +18,27 @@
         </Scripts>
     </Frame>
 
-    <!-- Cooldown Manager Panel -->
-    <Frame name="BetterEditMode_CdMiniPanel" inherits="BEM_PanelTemplate" hidden="true">
-        <Scripts>
-            <OnLoad inherit="append">
-                self.title:SetText("CD Manager Settings")
-            </OnLoad>
-        </Scripts>
-    </Frame>
+    <!-- GameplayEnhancements Panel -->
+    <Frame name="BetterEditMode_GameplayEnhancementsPanel" inherits="BEM_PanelTemplate" hidden="true">
+    <Scripts>
+        <OnLoad inherit="append">
+            self.title:SetText("Gameplay Enhancements")
+        </OnLoad>
+    </Scripts>
+    <Frames>
+        <Button parentKey="BossWarningsButton" inherits="UIPanelButtonTemplate" text="Boss Warnings">
+            <Size x="100" y="22"/>
+            <Anchors>
+                <Anchor point="RIGHT" relativeKey="$parent.Title" relativePoint="RIGHT" x="-10" y="73"/>
+            </Anchors>
+            <Scripts>
+                <OnClick>
+                    HideUIPanel(EditModeManagerFrame)
+                    Settings.OpenToCategory(Settings.ADVANCED_OPTIONS_CATEGORY_ID)
+                </OnClick>
+            </Scripts>
+        </Button>
+    </Frames>
+</Frame>
 
 </Ui>

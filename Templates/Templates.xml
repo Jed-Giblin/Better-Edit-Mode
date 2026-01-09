@@ -2,7 +2,7 @@
 
     <!-- Reusable panel template using BackdropTemplate -->
     <Frame name="BEM_PanelTemplate" virtual="true" inherits="BackdropTemplate">
-        <Size x="260" y="10"/>
+        <Size x="400" y="10"/>
         <Layers>
             <Layer level="OVERLAY">
                 <FontString name="$parentTitle" inherits="GameFontNormal" parentKey="title">
