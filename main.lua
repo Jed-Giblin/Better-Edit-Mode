@@ -108,9 +108,9 @@ local function setupCheckboxWithCallback(parent, featureName, featureData, y)
     return checkBox
 end
 
-local function setupButtonWithCallback(parent, featureName, featureData, y, x)
+local function setupButtonWithCallback(parent, featureName, featureData, y, x, width)
     local btn = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
-    btn:SetSize(110, 20)
+    btn:SetSize(width, 20)
     btn:SetText(featureName)
     btn:SetPoint("TOPLEFT", x, y)
     btn:SetScript("OnClick", function(btn)
@@ -148,6 +148,7 @@ function BetterEditMode:CreateBindingsPanel()
             children = {
                 ["Keybinding Mode"] = {
                     type = "button",
+                    width = 110,
                     callback = function()
                         if InCombatLockdown() then
                             UIErrorsFrame:AddMessage("Cannot open Keybinding mode in combat.", 1, 0.2, 0.2)
@@ -170,6 +171,7 @@ function BetterEditMode:CreateBindingsPanel()
                 },
                 ["Click Casting"] = {
                     type = "button",
+                    width = 110,
                     callback = function()
                         if InCombatLockdown() then
                             UIErrorsFrame:AddMessage("Cannot open Click Casting in combat.", 1, 0.2, 0.2)
@@ -190,7 +192,27 @@ function BetterEditMode:CreateBindingsPanel()
                             ToggleClickBindingFrame()
                         end
                     end
-                },
+                }
+            }
+        },
+        ["ROW_2"] = {
+            type = "row",
+            children = {
+                ['Advanced Cooldowns'] = {
+                    type = "button",
+                    width = 220,
+                    callback = function()
+                        if InCombatLockdown() then
+                            UIErrorsFrame:AddMessage("Cannot open Advanced Cooldowns in combat.", 1, 0.2, 0.2)
+                            return
+                        end
+                        if EditModeManagerFrame:HasActiveChanges() then
+                            print("Active changes detected")
+                        else
+                            CooldownViewerSettings:SetShown(not CooldownViewerSettings:IsShown())
+                        end
+                    end
+                }
             }
         }
     }
@@ -200,7 +222,7 @@ function BetterEditMode:CreateBindingsPanel()
         elseif featureData.type == "row" then
             local x = 10
             for childName, childData in pairs(featureData.children) do
-                setupButtonWithCallback( panel, childName, childData, y, x)
+                setupButtonWithCallback( panel, childName, childData, y, x, childData.width)
                 x = x + 110
             end
         end
