@@ -81,13 +81,6 @@ function BEM:CreateCdManagerPanel()
             table.insert(panel.checks, cb)
         end
     end
-    for k, v in pairs(Settings) do
-        print(k)
-        if k:match("_ID" .. "$") then
-            print(k)
-        end
-    end
-    print(Settings.GetSetting("cooldownViewerEnabled"))
     panel:RegisterEvent("CVAR_UPDATE")
     panel:SetScript("OnEvent", function(_, event, cvarName, cvarValue)
         if event == "CVAR_UPDATE" then
