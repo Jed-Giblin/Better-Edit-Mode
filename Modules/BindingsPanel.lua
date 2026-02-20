@@ -18,9 +18,9 @@ local function SetupCheckboxWithCallback(parent, featureName, featureData, y)
     return cb
 end
 
-local function SetupButtonWithCallback(parent, featureName, featureData, y, x)
+local function SetupButtonWithCallback(parent, featureName, featureData, y, x, width)
     local btn = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
-    btn:SetSize(110, 20)
+    btn:SetSize(width, 20)
     btn:SetText(featureName)
     btn:SetPoint("TOPLEFT", x, y)
     btn:SetScript("OnClick", featureData.callback)
@@ -69,6 +69,7 @@ function BEM:CreateBindingsPanel()
             children = {
                 {
                     name = "Keybinding Mode",
+                    width = 110,
                     callback = function()
                         if InCombatLockdown() then
                             UIErrorsFrame:AddMessage("Cannot open Keybinding mode in combat.", 1, 0.2, 0.2)
@@ -87,6 +88,7 @@ function BEM:CreateBindingsPanel()
                 },
                 {
                     name = "Click Casting",
+                    width = 110,
                     callback = function()
                         if InCombatLockdown() then
                             UIErrorsFrame:AddMessage("Cannot open Click Casting in combat.", 1, 0.2, 0.2)
@@ -104,6 +106,28 @@ function BEM:CreateBindingsPanel()
                         ToggleClickBindingFrame()
                     end
                 },
+            },
+        },
+        {
+            name = "ROW_2",
+            type = "row",
+            children = {
+                {
+                    name = "Advanced Cooldowns",
+                    type = "button",
+                    width = 220,
+                    callback = function()
+                        if InCombatLockdown() then
+                            UIErrorsFrame:AddMessage("Cannot open Advanced Cooldowns in combat.", 1, 0.2, 0.2)
+                            return
+                        end
+                        if EditModeManagerFrame:HasActiveChanges() then
+                            print("Active changes detected")
+                        else
+                            CooldownViewerSettings:SetShown(not CooldownViewerSettings:IsShown())
+                        end
+                    end
+                }
             }
         }
     }
@@ -117,7 +141,7 @@ function BEM:CreateBindingsPanel()
         elseif feature.type == "row" then
             local x = 10
             for _, child in ipairs(feature.children) do
-                local btn = SetupButtonWithCallback(panel, child.name, child, y, x)
+                local btn = SetupButtonWithCallback(panel, child.name, child, y, x, child.width)
                 table.insert(panel.controls, btn)
                 x = x + 115
             end
