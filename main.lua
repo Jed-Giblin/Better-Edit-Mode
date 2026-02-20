@@ -5,6 +5,8 @@ BetterEditMode = LibStub("AceAddon-3.0"):NewAddon(
     "AceEvent-3.0"
 )
 
+-- test comment
+
 local BetterEditMode = LibStub("AceAddon-3.0"):GetAddon("BetterEditMode")
 local AceGUI = LibStub("AceGUI-3.0")
 
