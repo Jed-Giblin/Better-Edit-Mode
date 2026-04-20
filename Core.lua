@@ -118,7 +118,6 @@ function BEM:SetupEditModeHooks()
 
     self:CreateActionBarMiniPanel()
     self:CreateBindingsPanel()
-    self:CreateCdManagerPanel()
 
     hooksecurefunc(EditModeManagerFrame, "EnterEditMode", function()
         if self._abMiniPanel then
@@ -158,16 +157,10 @@ function BEM:RecreatePanels()
         self._bndPanel:Hide()
         self._bndPanel:SetParent(nil)
     end
-    if self._cdMiniPanel then
-        self._cdMiniPanel:Hide()
-        self._cdMiniPanel:SetParent(nil)
-    end
 
     self._abMiniPanel = nil
     self._bndPanel = nil
-    self._cdMiniPanel = nil
 
     self:CreateActionBarMiniPanel()
     self:CreateBindingsPanel()
-    self:CreateCdManagerPanel()
 end

@@ -1,5 +1,5 @@
 
-## Interface: 120001, 120000, 110207
+## Interface: 120005, 120001
 ## Title: BetterEditMode
 ## Notes: More features is better
 ## Author: Spren
@@ -29,5 +29,4 @@ Templates\Templates.xml
 BetterEditMode.xml
 Modules\ActionBarPanel.lua
 Modules\BindingsPanel.lua
-Modules\GameplayEnhancementsPanel.lua
 Modules\Options.lua

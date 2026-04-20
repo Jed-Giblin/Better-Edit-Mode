@@ -6,6 +6,8 @@ local function SetupCheckboxWithCallback(parent, featureName, featureData, y)
     local cb = CreateFrame("CheckButton", nil, parent, "ChatConfigCheckButtonTemplate")
     cb:SetPoint("TOPLEFT", 8, y)
     cb.Text:SetText(featureName)
+    cb.Text:SetWidth(parent:GetWidth() - 50)
+    cb.Text:SetWordWrap(true)
     cb:SetChecked(featureData.getValue())
     cb:SetScript("OnClick", function(btn)
         if featureData.getValue() then
@@ -68,7 +70,7 @@ function BEM:CreateBindingsPanel()
             type = "row",
             children = {
                 {
-                    name = "Keybinding Mode",
+                    name = "Keybind Mode",
                     width = 110,
                     callback = function()
                         if InCombatLockdown() then
@@ -86,6 +88,12 @@ function BEM:CreateBindingsPanel()
                         QuickKeybindFrame:Show()
                     end
                 },
+            }
+        },
+        {
+            name = "ROW_2",
+            type = "row",
+            children = {
                 {
                     name = "Click Casting",
                     width = 110,
@@ -113,9 +121,9 @@ function BEM:CreateBindingsPanel()
             type = "row",
             children = {
                 {
-                    name = "Advanced Cooldowns",
+                    name = "CDM Settings",
                     type = "button",
-                    width = 220,
+                    width = 110,
                     callback = function()
                         if InCombatLockdown() then
                             UIErrorsFrame:AddMessage("Cannot open Advanced Cooldowns in combat.", 1, 0.2, 0.2)
@@ -125,6 +133,52 @@ function BEM:CreateBindingsPanel()
                             print("Active changes detected")
                         else
                             CooldownViewerSettings:SetShown(not CooldownViewerSettings:IsShown())
+                        end
+                    end
+                }
+            }
+        },
+        {
+            name = "ROW_3",
+            type = "row",
+            children = {
+                {
+                    name = "Boss Warnings",
+                    type = "button",
+                    width = 110,
+                    callback = function()
+                        if InCombatLockdown() then
+                            UIErrorsFrame:AddMessage("Cannot open Boss Warnings in combat.", 1, 0.2, 0.2)
+                            return
+                        end
+                        if EditModeManagerFrame:HasActiveChanges() then
+                            print("Active changes detected")
+                        else
+                            HideUIPanel(EditModeManagerFrame)
+                            Settings.OpenToCategory(Settings.ADVANCED_OPTIONS_CATEGORY_ID, "Boss Warnings")
+                        end
+                    end
+                }
+            }
+        },
+        {
+            name = "ROW_3",
+            type = "row",
+            children = {
+                {
+                    name = "Enhancements",
+                    type = "button",
+                    width = 110,
+                    callback = function()
+                        if InCombatLockdown() then
+                            UIErrorsFrame:AddMessage("Cannot open Enhancements in combat.", 1, 0.2, 0.2)
+                            return
+                        end
+                        if EditModeManagerFrame:HasActiveChanges() then
+                            print("Active changes detected")
+                        else
+                            HideUIPanel(EditModeManagerFrame)
+                            Settings.OpenToCategory(Settings.ADVANCED_OPTIONS_CATEGORY_ID)
                         end
                     end
                 }
@@ -151,7 +205,7 @@ function BEM:CreateBindingsPanel()
     end
 
     local height = math.max((32 + 16) + (controlCount * 26), 60)
-    panel:SetSize(290, height)
+    panel:SetSize(160, height)
     panel:Show()
 
     self._bndPanel = panel

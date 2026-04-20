@@ -54,7 +54,7 @@ function BEM:CreateActionBarMiniPanel()
 
 
     local height = math.max((32 + 16) + (#panel.checks * 22), 60)
-    panel:SetSize(290, height)
+    panel:SetSize(160, height)
 
     if self:InEditMode() then
         panel:Show()
